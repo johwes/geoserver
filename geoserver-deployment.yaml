@@ -33,7 +33,7 @@ spec:
       - env:
         - name: CATALINA_OPTS
           value: -DGEOSERVER_DATA_DIR=/geoserverdata
-        image: image-registry.openshift-image-registry.svc:5000/00-geoserver/geoserver@sha256:ca142aae79ea704fe953eedf54b94c293814efba89eb2a1926c3394c89efcc7c
+          image: image-registry.openshift-image-registry.svc:5000/00-geoserver/geoserver:latest
         imagePullPolicy: Always
         name: geoserver
         resources:
