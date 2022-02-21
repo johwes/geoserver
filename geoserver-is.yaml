@@ -1,0 +1,18 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: ""
+    app.openshift.io/vcs-uri: https://github.com/johwes/Containers
+    openshift.io/generated-by: OpenShiftWebConsole
+  generation: 1
+  labels:
+    app: geoserver
+    app.kubernetes.io/component: geoserver
+    app.kubernetes.io/instance: geoserver
+    app.kubernetes.io/name: geoserver
+    app.kubernetes.io/part-of: geoserver-app
+  name: geoserver
+spec:
+  lookupPolicy:
+    local: false

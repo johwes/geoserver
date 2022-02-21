@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+    app.openshift.io/vcs-ref: ""
+    app.openshift.io/vcs-uri: https://github.com/johwes/Containers
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"geoserver:latest","namespace":"00-geoserver"},"fieldPath":"spec.template.spec.containers[?(@.name==\"geoserver\")].image","pause":"false"}]'
+  labels:
+    app: geoserver
+    app.kubernetes.io/component: geoserver
+    app.kubernetes.io/instance: geoserver
+    app.kubernetes.io/name: geoserver
+    app.kubernetes.io/part-of: geoserver-app
+  name: geoserver
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: geoserver
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: geoserver
+        deploymentconfig: geoserver
+    spec:
+      containers:
+      - env:
+        - name: CATALINA_OPTS
+          value: -DGEOSERVER_DATA_DIR=/geoserverdata
+        image: image-registry.openshift-image-registry.svc:5000/00-geoserver/geoserver@sha256:ca142aae79ea704fe953eedf54b94c293814efba89eb2a1926c3394c89efcc7c
+        imagePullPolicy: Always
+        name: geoserver
+        resources:
+          requests:
+            cpu: 200m
+            memory: 500Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /geoserverdata
+          name: geoserverdata-storage
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: geoserverdata-storage
+        persistentVolumeClaim:
+          claimName: geoserverdata-storage
+
+

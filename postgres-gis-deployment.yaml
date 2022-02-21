@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: postgres-gis
+  name: postgres-gis
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: postgres-gis
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: postgres-gis
+    spec:
+      containers:
+      - env:
+        - name: PG_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              key: PG_DATABASE
+              name: postgres-gis-config
+        - name: PG_PRIMARY_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: PG_PRIMARY_PORT
+              name: postgres-gis-config
+        - name: PG_PRIMARY_USER
+          valueFrom:
+            configMapKeyRef:
+              key: PG_PRIMARY_USER
+              name: postgres-gis-config
+        - name: PG_USER
+          valueFrom:
+            configMapKeyRef:
+              key: PG_USER
+              name: postgres-gis-config
+        - name: MODE
+          valueFrom:
+            configMapKeyRef:
+              key: MODE
+              name: postgres-gis-config
+        - name: PG_MODE
+          valueFrom:
+            configMapKeyRef:
+              key: PG_MODE
+              name: postgres-gis-config
+        - name: PG_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: PG_PASSWORD
+              name: postgres-gis-config
+        - name: PG_PRIMARY_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: PG_PRIMARY_PASSWORD
+              name: postgres-gis-config
+        - name: PG_ROOT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: PG_ROOT_PASSWORD
+              name: postgres-gis-config
+        image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres-gis@sha256:75000b71bf9058997577a331f1236ab9bd89ac0410fe92868309e17086090c9d
+        imagePullPolicy: IfNotPresent
+        name: postgres-gis
+        resources:
+          requests:
+            cpu: 200m
+            memory: 500Mi
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /backrestrepo
+          name: postgres-gis-storage
+          subPath: backrestrepo
+        - mountPath: /pgconf
+          name: postgres-gis-storage
+          subPath: pgconf
+        - mountPath: /pgdata
+          name: postgres-gis-storage
+          subPath: pgdata
+        - mountPath: /pgwal
+          name: postgres-gis-storage
+          subPath: pgwal
+        - mountPath: /sshd
+          name: postgres-gis-storage
+          subPath: sshd
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: postgres-gis-storage
+        persistentVolumeClaim:
+          claimName: postgres-gis-storage
+

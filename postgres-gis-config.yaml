@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  MODE: postgres
+  PG_DATABASE: intern
+  PG_MODE: primary
+  PG_PASSWORD: password
+  PG_PRIMARY_PASSWORD: password
+  PG_PRIMARY_PORT: "5432"
+  PG_PRIMARY_USER: postgres
+  PG_ROOT_PASSWORD: password
+  PG_USER: testuser
+kind: ConfigMap
+metadata:
+  name: postgres-gis-config

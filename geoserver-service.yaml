@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: ""
+    app.openshift.io/vcs-uri: https://github.com/johwes/Containers
+  labels:
+    app: geoserver
+    app.kubernetes.io/component: geoserver
+    app.kubernetes.io/instance: geoserver
+    app.kubernetes.io/name: geoserver
+    app.kubernetes.io/part-of: geoserver-app
+  name: geoserver
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: 8080-tcp
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: geoserver
+    deploymentconfig: geoserver
+  sessionAffinity: None
+  type: ClusterIP
