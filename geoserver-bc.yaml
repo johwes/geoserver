@@ -29,5 +29,8 @@ spec:
   strategy:
     dockerStrategy:
       dockerfilePath: geoserver/Dockerfile
+      buildArgs:
+        - name: "GS_VERSION"
+          value: "2.20.2"
     type: Docker
   successfulBuildsHistoryLimit: 5
