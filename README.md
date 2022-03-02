@@ -1,7 +1,8 @@
 Repository for a kubernetes deployment of a geoserver and postgis instance.
 
 Example argo application to deploy this with gitops.
-"
+
+```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -20,5 +21,5 @@ spec:
     syncOptions:
     - CreateNamespace=true
 
-"
 
+```
