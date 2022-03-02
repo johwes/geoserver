@@ -1,0 +1,32 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: develop
+    app.openshift.io/vcs-uri: https://github.com/hajkmap/Hajk.git
+  labels:
+    app: hajk
+    app.kubernetes.io/component: hajk
+    app.kubernetes.io/instance: hajk
+    app.kubernetes.io/name: hajk
+  name: hajk
+spec:
+  failedBuildsHistoryLimit: 5
+  output:
+    to:
+      kind: ImageStreamTag
+      name: hajk:latest
+  runPolicy: Serial
+  source:
+    contextDir: /
+    git:
+      ref: develop
+      uri: https://github.com/hajkmap/Hajk.git
+    type: Git
+  strategy:
+    dockerStrategy:
+      dockerfilePath: Dockerfile.ubi8-nodejs
+    type: Docker
+  triggers:
+  - type: ConfigChange
+  successfulBuildsHistoryLimit: 5

@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hajk-env-cm
+data:
+  .env: "# *** README FIRST ***\n# This file contains environmental variables that
+    will be passed to the Hajk backend.\n# All variable that are set here can be overridden
+    by setting them on runtime before\n# initiating the script.\n#\n# This file is
+    organized into categories. Each category starts with a header, surrounded by \"***\".\n\n#
+    *** General NodeJS settings ***\n\n# This is useful in a cluster environment where
+    we want the different cluster\n# instances to write to different log files. \n#
+    Suppose a scenario where you want to share the codebase among servers (so you
+    only\n# need to update files in one place). This .env file would be shared too,
+    naturally, as\n# you probably want the same settings (mostly). There are however
+    cases where you'd like\n# to have unique env variables on the different cluster
+    instances, and one such variable is\n# the HAJK_INSTANCE_ID below.\n#\n# The value
+    below will be applied to the log's name. Note that you should override it on a
+    per-instance-basis\n# because this .env file is probably shared by multiple instances.
+    Refer to your OS's documentation\n# for how to set environment variables on runtime,
+    e.g. on *NIX systems it's: 'MY_VARIABLE=foo node index.js'\nHAJK_INSTANCE_ID=\n\n#
+    Set to \"development\" or \"production\", see: https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production\nNODE_ENV=development\n\n#
+    *** HTTP SERVER SETTINGS ***\n# Port that the HTTP server will listen on\nPORT=3002\n\n#
+    When an Express app is running behind a proxy, app.set('trust proxy') should be\n#
+    set. This setting simply passes its value to Express as the value of 'trust proxy'.
+    \n# To sum up: if set to true, the client IP will be extracted from the leftmost
+    portion\n# of X-Forwarded-For. Else, the client's IP is assumed to be the same
+    as req.connection.remoteAddress. \n# See https://expressjs.com/en/guide/behind-proxies.html
+    for an explanation. \nEXPRESS_TRUST_PROXY=\n\n# Limit the body size of incoming
+    requests. The default value, 1000kb, is rather\n# high, in order to accommodate
+    for requests from admin that can contain entire\n# DocumentHandler configuration,
+    when that plugin is activated. \nREQUEST_LIMIT=1000kb\n\n# Session secret for
+    signed cookies, see: https://github.com/expressjs/cookie-parser. \nSESSION_SECRET=mySecret\n\n#
+    Control which directories will be statically exposed on the HTTP server.\n# /
+    can contain Hajk's client app\nEXPOSE_CLIENT=true\n# If we expose /admin, we want
+    probably to restrict access to it. Make sure \n# to enable AD_* settings below
+    in order for this to work.\nRESTRICT_ADMIN_ACCESS_TO_AD_GROUPS=GIS_ADMIN\n\n#
+    Other static files can be shared (and restricted to AD groups!) via Hajk's backend.
+    \n# E.g. to make foo-bar accessible as /foo-bar for groups gr1 and gr2, put the
+    \"foo-bar\" \n# directory inside \"static\" and add \"EXPOSE_AND_RESTRICT_STATIC_FOO_BAR=gr1,gr2\"
+    to this file. \n\n# If no restriction is specified but the key exists, the access
+    is unrestricted.\nEXPOSE_AND_RESTRICT_STATIC_API_EXPLORER=     \n# If key exists
+    and is specified, the access is limited to the specified groups\nEXPOSE_AND_RESTRICT_STATIC_ADMIN=GIS_ADMIN\n\n#
+    *** DEVELOPER'S SETTINGS ***\n# Browser that will be auto-started when developing\nBROWSER=\n\n#
+    *** LOGGING SETTINGS ***\n# Log level for all appenders, see log4js for documentation.\n#
+    Allowed values: ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF\nLOG_LEVEL=all\n\n#
+    Select where the log will be printed. Valid appenders are \"console\" and \"file\".\n#
+    \"console\" will print output to stdout. \n# \"file\" will print to a file – logs/output.log.\nLOG_DEBUG_TO=console,file\n\n#
+    List of appenders that will print web server's access log.\n# Empty value will
+    disable printing of access log.\n# \"accessLog\" will write to logs/access.log.\n#
+    \"console\" will print to stdout.\nLOG_ACCESS_LOG_TO=accessLog\n\n# If true, all
+    events that result in write to the JSON data store\n# (such as modifying a map
+    config or adding a layer), will be written\n# to a separate log, containing the
+    action preformed and user name (if AD \n# is active).\nLOG_ADMIN_EVENTS=true\n\nLOG_DETAILED_REQUEST_LOGGER=false\n\n#
+    Additionally, you may be interested in Express's default logging,\n# see https://expressjs.com/en/guide/debugging.html
+    for details\n#DEBUG=express:*\n\n# *** GENERIC HAJK PROXY SETTINGS, SEE #824 ***\nPROXY_GEOSERVER=https://demo.geo-solutions.it/geoserver\nPROXY_QGISSERVER=http://qgis.example.com:8080\n\n#
+    *** FB SOKIGO PROXY SETTINGS ***\nFB_SERVICE_ACTIVE=\nFB_SERVICE_BASE_URL=\nFB_SERVICE_DB=\nFB_SERVICE_USER=\nFB_SERVICE_PASS=\n\n#
+    *** FME-SERVER SETTINGS ***\n# To enable the FME-server proxy, uncomment the settings
+    below and supply proper values.\n#FME_SERVER_ACTIVE=true\n# The url to the FME-server
+    instance.\n#FME_SERVER_BASE_URL=https://fmeserver.some.domain.com\n# A FME-server
+    user with access to some repository and workspace.\n#FME_SERVER_USER=someFmeUser\n#
+    Password for the FME-server user supplied above.\n#FME_SERVER_PASSWORD=aGreatFmeUserPassWord\n\n#
+    *** ACTIVEDIRECTORY SETTINGS ***\nAD_LOOKUP_ACTIVE=false\n# Comma-separated list
+    of allowed IPs that we trust. Set to your proxy/ies IP.\n# Avoid whitespaces.
+    If not set, but AD lookup is active, a warning will be displayed\n# as it is very
+    dangerous to trust X-Control-Header from any remote IP.\nAD_TRUSTED_PROXY_IPS=10.0.1.1,10.0.1.2\n#
+    Name of the HTTP header that will contain the trusted user name\nAD_TRUSTED_HEADER=X-Control-Header\n#
+    Necessary settings to make lookups in AD possible\nAD_URL=ldap://some.domain.com
+    # Also, check out the AD_TLS_* settings below for ldaps://\nAD_BASE_DN=DC=test,DC=example,DC=com\nAD_USERNAME=user\nAD_PASSWORD=pass\n\n#
+    Used to send a basic query to the AD on startup, to ensure the connection is working.\n#
+    Leave empty to send an empty query (should work for all cases). \n#AD_CHECK_CONNECTION_QUERY=\n\n#
+    Controls whether the AD user object will be sent in the GET map config response.\n#
+    This is a useful way to let Client UI know more about the user and allows for\n#
+    user-specific customization.\n#AD_EXPOSE_USER_OBJECT=true\n\n# For LDAPS we must
+    provide the following TLS options. \n# Leave empty if you don't use LDAPS.\n#AD_TLS_PATH_TO_KEY=
+    \  # \"/absolute/path/to/serverkey.pem\"\n#AD_TLS_PATH_TO_CERT=  # \"/absolute/path/to/servercert.pem\"\n#AD_TLS_PATH_TO_CA=
+    \   # \"/absolute/path/to/cacert.pem\"\n#AD_TLS_PASSPHRASE=    # \"superSecretDecryptPassPhraseGoesHere\"\n\n#
+    For development and testing purposes, a user name can be supplied here.\n# Make
+    sure to always disable this in production!\n#AD_OVERRIDE_USER_WITH_VALUE=someUser\n\n#
+    *** OPENAPI SETTINGS ***\nOPENAPI_SPEC=/api/v1/spec\nOPENAPI_ENABLE_RESPONSE_VALIDATION=false\n"

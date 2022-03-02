@@ -1,0 +1,16 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: develop
+    app.openshift.io/vcs-uri: https://github.com/hajkmap/Hajk.git
+    openshift.io/generated-by: OpenShiftWebConsole
+  labels:
+    app: hajk
+    app.kubernetes.io/component: hajk
+    app.kubernetes.io/instance: hajk
+    app.kubernetes.io/name: hajk
+  name: hajk
+spec:
+  lookupPolicy:
+    local: false

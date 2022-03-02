@@ -33,4 +33,6 @@ spec:
         - name: "GS_VERSION"
           value: "2.20.2"
     type: Docker
+  triggers:
+  - type: ConfigChange
   successfulBuildsHistoryLimit: 5
