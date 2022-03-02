@@ -1,4 +1,5 @@
 Repository for a kubernetes deployment of a geoserver and postgis instance.
+The openshift/kubernetes manifests are static / not templated.. so is more of PoC / Demo quality.
 
 Example argo application to deploy this with gitops.
 
